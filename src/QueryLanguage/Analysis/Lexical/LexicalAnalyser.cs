@@ -14,7 +14,6 @@ namespace QueryLanguage.Analysis.Lexical
             }
 
             var result = new List<string>();
-
             var quoteOpened = false;
             var lexeme = string.Empty;
 
@@ -25,22 +24,25 @@ namespace QueryLanguage.Analysis.Lexical
                     case ' ':
                         if (!quoteOpened)
                         {
+                            if (string.IsNullOrEmpty(lexeme))
+                                continue;
                             result.Add(lexeme);
                             lexeme = string.Empty;
                         }
                         else
                         {
-                            lexeme += ' ';
+                            lexeme += character;
                         }
 
                         break;
                     case '\'':
+                        lexeme += character;
                         if (quoteOpened)
                         {
+                            //closing quote
                             result.Add(lexeme);
                             lexeme = string.Empty;
                         }
-
                         quoteOpened = !quoteOpened;
                         break;
                     default:

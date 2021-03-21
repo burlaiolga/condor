@@ -14,26 +14,15 @@ namespace QueryLanguage
     {
         static async Task Main()
         {
-            var allCountries = new List<Country>();
             LanguageProcessor languageProcessor = new LanguageProcessor();
-
-            while (!allCountries.Any())
-            {
-                Console.WriteLine("Please enter a path to the test data (or press Enter for default):");
-                string file = Console.ReadLine();
-                if (string.IsNullOrEmpty(file))
-                    file = "Data/Countries.json";
-
-                allCountries = await GetCountriesAsync(file);
-            }
+            var allCountries = await InitCountriesAsync();
 
             Console.WriteLine("Data set:");
             Console.WriteLine(Encoding.UTF8.GetString(JsonSerializer.SerializeToUtf8Bytes(allCountries, options: new JsonSerializerOptions() { WriteIndented = true })));
-
             do
             {
                 Console.WriteLine();
-                Console.WriteLine("Please enter expression, e.g. 'Name eq Australia or Population ge 100 and Population lt 201'");
+                Console.WriteLine("Please enter expression, e.g: Name eq 'Australia' or Population ge 100 and Population lt 201");
                 Console.WriteLine($"Available operators: { string.Join(',', Enum.GetValues<Operator>())}");
                 string expression = Console.ReadLine();
                 if (string.IsNullOrEmpty(expression))
@@ -77,6 +66,23 @@ namespace QueryLanguage
             }
             while (true);
         }
+
+        private static async Task<List<Country>> InitCountriesAsync()
+        {
+            var allCountries = new List<Country>();
+            while (!allCountries.Any())
+            {
+                Console.WriteLine("Please enter a path to the test data (or press Enter for default):");
+                string file = Console.ReadLine();
+                if (string.IsNullOrEmpty(file))
+                    file = "Data/Countries.json";
+
+                allCountries = await GetCountriesAsync(file);
+            }
+
+            return allCountries;
+        }
+
 
         private static async Task<List<Country>> GetCountriesAsync(string file)
         {

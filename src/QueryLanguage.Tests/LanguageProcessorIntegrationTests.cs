@@ -18,7 +18,7 @@ namespace QueryLanguage.Tests
                 new Country()
                 {
                     Population = 20,
-                    Name = "NewZealand"
+                    Name = "New Zealand"
                 },
                 new Country()
                 {
@@ -40,7 +40,7 @@ namespace QueryLanguage.Tests
         [TestMethod]
         public void TestSimpleCondition()
         {
-            string expression = "Name eq Australia";
+            string expression = "Name eq 'Australia'";
             var countries = languageProcessor.Find(allCountries, expression);
             countries.Should().Contain(allCountries.Last());
             countries.Count.Should().IsSameOrEqualTo(1);
@@ -50,15 +50,16 @@ namespace QueryLanguage.Tests
         [TestMethod]
         public void TestConditionWithLogicalOperator()
         {
-            string expression = "Name eq Australia or Population ge 100 and Population lt 201";
+            string expression = "Name eq 'Australia' or Population ge 100 and Population lt 201";
             var countries = languageProcessor.Find(allCountries, expression);
-           countries.Count.Should().IsSameOrEqualTo(3);
+            countries.Count.Should().IsSameOrEqualTo(3);
         }
 
         //"Name eq Australia or Population", "or and eq",  "100 eq 201" "Australia", "Australia or Population"
         [TestMethod]
         [DataRow("or and eq")]
-        [DataRow("Name eq Australia or Population")]
+        [DataRow("Name eq Australia")]
+        [DataRow("Name eq 'Australia' or Population")]
         [DataRow("Population like 20")]
         [DataRow("Name gt 1")]
         [ExpectedException(typeof(ExpressionInvalidException))]

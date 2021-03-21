@@ -59,8 +59,15 @@ namespace QueryLanguage.Analysis.Semantic
 
                 return BuildNumericPredicate(node, propertyName, intValue);
             }
+            else
+            {
+                if (!stringValue.StartsWith('\'') || !stringValue.EndsWith('\''))
+                {
+                    throw new ExpressionInvalidException($"{stringValue} must be a string (please add quotes)");
+                }
+                return BuildStringPredicate(node, propertyName, stringValue.Trim('\''));
+            }
 
-            return BuildStringPredicate(node, propertyName, stringValue);
         }
 
         private static Func<Country, bool> BuildNumericPredicate(BinaryNode node, string propertyName, int intValue)
